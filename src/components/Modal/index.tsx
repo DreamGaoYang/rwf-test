@@ -46,13 +46,13 @@ const StyledDialogContent = styled(({ minHeight, maxHeight, mobile, isOpen, ...r
 
     max-width: 420px;
     ${({ maxHeight }) =>
-      maxHeight &&
-      css`
+    maxHeight &&
+    css`
         max-height: ${maxHeight}vh;
       `}
     ${({ minHeight }) =>
-      minHeight &&
-      css`
+    minHeight &&
+    css`
         min-height: ${minHeight}vh;
       `}
     display: flex;
@@ -63,15 +63,14 @@ const StyledDialogContent = styled(({ minHeight, maxHeight, mobile, isOpen, ...r
     `}
     ${({ theme, mobile }) => theme.mediaWidth.upToSmall`
       width:  85vw;
-      ${
-        mobile &&
-        css`
+      ${mobile &&
+    css`
           width: 100vw;
           border-radius: 20px;
           border-bottom-left-radius: 0;
           border-bottom-right-radius: 0;
         `
-      }
+    }
     `}
   }
 `
@@ -85,20 +84,23 @@ interface ModalProps {
   children?: React.ReactNode
 }
 
-export default function Modal({
-  isOpen,
-  onDismiss,
-  minHeight = false,
-  maxHeight = 90,
-  initialFocusRef,
-  children,
-}: ModalProps) {
-  const fadeTransition = useTransition(isOpen, null, {
-    config: { duration: 200 },
-    from: { opacity: 0 },
-    enter: { opacity: 1 },
-    leave: { opacity: 0 },
-  })
+
+
+
+export default function Modal(
+  { isOpen, onDismiss, minHeight = false, maxHeight = 90, initialFocusRef, children, }: ModalProps
+) {
+  const fadeTransition = useTransition(
+    isOpen,
+    null,
+    {
+      config: { duration: 200 },
+      from: { opacity: 0 },
+      enter: { opacity: 1 },
+      leave: { opacity: 0 },
+    }
+  )
+  // console.log(fadeTransition)
 
   const [{ y }, set] = useSpring(() => ({ y: 0, config: { mass: 1, tension: 210, friction: 20 } }))
   const bind = useGesture({
@@ -114,9 +116,9 @@ export default function Modal({
 
   return (
     <>
-      {fadeTransition.map(
-        ({ item, key, props }) =>
-          item && (
+      {
+        fadeTransition.map(({ item, key, props }) => {
+          return item && (
             <StyledDialogOverlay
               key={key}
               style={props}
@@ -127,9 +129,9 @@ export default function Modal({
               <StyledDialogContent
                 {...(isMobile
                   ? {
-                      ...bind(),
-                      style: { transform: y.interpolate((y) => `translateY(${(y as number) > 0 ? y : 0}px)`) },
-                    }
+                    ...bind(),
+                    style: { transform: y.interpolate((y) => `translateY(${(y as number) > 0 ? y : 0}px)`) },
+                  }
                   : {})}
                 aria-label="dialog content"
                 minHeight={minHeight}
@@ -142,7 +144,8 @@ export default function Modal({
               </StyledDialogContent>
             </StyledDialogOverlay>
           )
-      )}
+        })
+      }
     </>
   )
 }

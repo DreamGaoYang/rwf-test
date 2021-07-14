@@ -118,9 +118,10 @@ export default function Vote() {
   const showDelegateModal = useModalOpen(ApplicationModal.DELEGATE)
   const toggleDelegateModal = useToggleDelegateModal()
 
+  // 标记 投票
   // get data to list all proposals
   const allProposals: ProposalData[] = useAllProposalData()
-
+  console.log(allProposals)
   // user data
   const availableVotes: CurrencyAmount<Token> | undefined = useUserVotes()
   const uniBalance: CurrencyAmount<Token> | undefined = useTokenBalance(

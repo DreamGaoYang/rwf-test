@@ -21,6 +21,9 @@ import UNISOCKS_ABI from 'abis/unisocks.json'
 import WETH_ABI from 'abis/weth.json'
 import EIP_2612 from 'abis/eip_2612.json'
 
+import iToken_ABI from 'abis/iToken.json'
+import LendingData_ABI from 'abis/lendingData.json'
+
 import {
   NONFUNGIBLE_POSITION_MANAGER_ADDRESSES,
   QUOTER_ADDRESSES,
@@ -44,6 +47,8 @@ import { Erc20, ArgentWalletDetector, EnsPublicResolver, EnsRegistrar, Multicall
 import { UNI, WETH9_EXTENDED } from '../constants/tokens'
 import { useActiveWeb3React } from './web3'
 
+
+// 标记 实例化合约
 // returns null on errors
 export function useContract<T extends Contract = Contract>(
   addressOrAddressMap: string | { [chainId: number]: string } | undefined,
@@ -59,6 +64,7 @@ export function useContract<T extends Contract = Contract>(
     else address = addressOrAddressMap[chainId]
     if (!address) return null
     try {
+      // console.log('***** useMemo *****')
       return getContract(address, ABI, library, withSignerIfPossible && account ? account : undefined)
     } catch (error) {
       console.error('Failed to get contract', error)
@@ -66,6 +72,16 @@ export function useContract<T extends Contract = Contract>(
     }
   }, [addressOrAddressMap, ABI, library, chainId, withSignerIfPossible, account]) as T
 }
+
+export function usePoolContract(tokenAddress?: string) {
+  return useContract(tokenAddress, iToken_ABI)
+}
+export function useLendingDataContract(tokenAddress?: string) {
+  return useContract(tokenAddress, LendingData_ABI)
+}
+
+
+
 
 export function useV2MigratorContract() {
   return useContract<V3Migrator>(V3_MIGRATOR_ADDRESSES, V2MigratorABI, true)

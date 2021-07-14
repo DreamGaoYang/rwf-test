@@ -157,6 +157,7 @@ function useDataFromEventLogs():
   return formattedEvents
 }
 
+// 标记 投票详情
 // get data for all past and active proposals
 export function useAllProposalData(): ProposalData[] {
   const { chainId } = useActiveWeb3React()

@@ -34,6 +34,7 @@ export function getProviderOrSigner(library: Web3Provider, account?: string): We
   return account ? getSigner(library, account) : library
 }
 
+// 标记 实例化合约
 // account is optional
 export function getContract(address: string, ABI: any, library: Web3Provider, account?: string): Contract {
   if (!isAddress(address) || address === AddressZero) {
@@ -53,4 +54,40 @@ export function isTokenOnList(tokenAddressMap: TokenAddressMap, token?: Token): 
 
 export function formattedFeeAmount(feeAmount: FeeAmount): number {
   return feeAmount / 10000
+}
+
+
+export const format_bn = (numStr: string, decimals: number, decimalPlace = decimals) => {
+  numStr = numStr.toLocaleString().replace(/,/g, "");
+  // decimals = decimals.toString();
+
+  // var str = (10 ** decimals).toLocaleString().replace(/,/g, '').slice(1);
+  const str = Number(`1e+${decimals}`).toLocaleString().replace(/,/g, "").slice(1);
+
+  let res = (
+    numStr.length > decimals ?
+      numStr.slice(0, numStr.length - decimals) + "." + numStr.slice(numStr.length - decimals)
+      :
+      "0." + str.slice(0, str.length - numStr.length) + numStr
+  )
+
+  res = res.replace(/(0+)$/g, "");
+
+  res = res.slice(-1) === "." ? res + "00" : res;
+
+  if (decimalPlace === 0) return res.slice(0, res.indexOf("."));
+
+  const length = res.indexOf(".") + 1 + decimalPlace;
+  return res.slice(0, length >= res.length ? res.length : length);
+  // return res.slice(-1) == '.' ? res + '00' : res;
+}
+
+export const format_num_to_K = (str_num: string) => {
+  let part_a = str_num.split(".")[0];
+  const part_b = str_num.split(".")[1];
+
+  const reg = /\d{1,3}(?=(\d{3})+$)/g;
+  part_a = (part_a + "").replace(reg, "$&,");
+
+  return part_a + "." + part_b;
 }

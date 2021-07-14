@@ -66,5 +66,5 @@ export const LOCALE_LABEL: { [locale in SupportedLocale]: string } = {
   'uk-UA': 'Український',
   'vi-VN': 'Tiếng Việt',
   'zh-CN': '中文 ( 中国 )',
-  'zh-TW': '中文 ( 台灣 )',
+  'zh-TW': '中文 ( 中國台灣 )',
 }

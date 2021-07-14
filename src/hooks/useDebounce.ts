@@ -1,5 +1,9 @@
 import { useEffect, useState } from 'react'
 
+
+
+// 标记 利用hooks特性 实现 函数防抖功能
+
 // modified from https://usehooks.com/useDebounce/
 export default function useDebounce<T>(value: T, delay: number): T {
   const [debouncedValue, setDebouncedValue] = useState<T>(value)

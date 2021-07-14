@@ -151,5 +151,7 @@
     ]
   },
   "license": "GPL-3.0-or-later",
-  "dependencies": {}
+  "dependencies": {
+    "bignumber.js": "^9.0.0"
+  }
 }

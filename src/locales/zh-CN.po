@@ -1020,6 +1020,14 @@ msgstr "新仓位"
 msgid "No V2 Liquidity found."
 msgstr "找不到V2流动资金。"
 
+#: src/pages/Home/index.tsx
+msgid "No V2 Liquidity found. home home home..."
+msgstr "哈哈哈"
+
+#: src/pages/Home/index.tsx
+msgid "xianshi hhh"
+msgstr "在这里显示一下"
+
 #: src/pages/Earn/index.tsx
 #: src/pages/Earn/index.tsx
 msgid "No active pools"

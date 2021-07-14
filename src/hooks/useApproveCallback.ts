@@ -10,6 +10,7 @@ import { calculateGasMargin } from '../utils/calculateGasMargin'
 import { useTokenContract } from './useContract'
 import { useActiveWeb3React } from './web3'
 import { useTokenAllowance } from './useTokenAllowance'
+import { Contract } from '@ethersproject/contracts'
 
 export enum ApprovalState {
   UNKNOWN = 'UNKNOWN',
@@ -114,8 +115,42 @@ export function useApproveCallbackFromTrade(
       ? trade instanceof V2Trade
         ? V2_ROUTER_ADDRESS[chainId]
         : trade instanceof V3Trade
-        ? v3SwapRouterAddress
-        : undefined
+          ? v3SwapRouterAddress
+          : undefined
       : undefined
   )
+}
+
+
+
+export function useApprovingCallback(spender?: string) {
+
+
+  const addTransaction = useTransactionAdder()
+
+  const approve = useCallback(async (tokenContract?: Contract): Promise<void> => {
+    if (!tokenContract) {
+      console.error('tokenContract is null')
+      return
+    }
+    if (!spender) {
+      console.error('no spender')
+      return
+    }
+
+
+    return tokenContract.approve(spender, MaxUint256)
+      .then((response: TransactionResponse) => {
+        addTransaction(response, {
+          summary: 'Approve USDC',
+          approval: { tokenAddress: tokenContract.address, spender: spender },
+        })
+      })
+      .catch((error: Error) => {
+        console.debug('Failed to approve token', error)
+        throw error
+      })
+  }, [spender, addTransaction])
+
+  return approve
 }

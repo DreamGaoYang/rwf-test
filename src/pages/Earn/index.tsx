@@ -73,15 +73,7 @@ export default function Earn() {
                   </Trans>
                 </TYPE.white>
               </RowBetween>{' '}
-              <ExternalLink
-                style={{ color: 'white', textDecoration: 'underline' }}
-                href="https://uniswap.org/blog/uni/"
-                target="_blank"
-              >
-                <TYPE.white fontSize={14}>
-                  <Trans>Read more about UNI</Trans>
-                </TYPE.white>
-              </ExternalLink>
+
             </AutoColumn>
           </CardSection>
           <CardBGImage />

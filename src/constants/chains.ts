@@ -1,3 +1,5 @@
+
+// 标记 支持的network
 export enum SupportedChainId {
   MAINNET = 1,
   ROPSTEN = 3,

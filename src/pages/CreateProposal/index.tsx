@@ -10,7 +10,6 @@ import { CreateProposalTabs } from '../../components/NavigationTabs'
 import { ButtonError } from 'components/Button'
 import { AutoColumn } from 'components/Column'
 import { BlueCard } from 'components/Card'
-import { Wrapper } from 'pages/Pool/styleds'
 import { ProposalAction, ProposalActionSelector, ProposalActionSelectorModal } from './ProposalActionSelector'
 import { ProposalEditor } from './ProposalEditor'
 import { ProposalActionDetail } from './ProposalActionDetail'
@@ -44,9 +43,9 @@ const CreateProposalButton = ({
 }) => {
   const formattedProposalThreshold = proposalThreshold
     ? JSBI.divide(
-        proposalThreshold.quotient,
-        JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(proposalThreshold.currency.decimals))
-      ).toLocaleString()
+      proposalThreshold.quotient,
+      JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(proposalThreshold.currency.decimals))
+    ).toLocaleString()
     : undefined
 
   return (
@@ -72,6 +71,11 @@ const CreateProposalButton = ({
     </ButtonError>
   )
 }
+
+const Wrapper = styled.div`
+  position: relative;
+  padding: 20px;
+`
 
 const CreateProposalWrapper = styled(Wrapper)`
   display: flex;
@@ -160,11 +164,11 @@ export default function CreateProposal() {
     () =>
       Boolean(
         !proposalAction ||
-          !utils.isAddress(toAddressValue) ||
-          !currencyValue?.isToken ||
-          amountValue === '' ||
-          titleValue === '' ||
-          bodyValue === ''
+        !utils.isAddress(toAddressValue) ||
+        !currencyValue?.isToken ||
+        amountValue === '' ||
+        titleValue === '' ||
+        bodyValue === ''
       ),
     [proposalAction, toAddressValue, currencyValue, amountValue, titleValue, bodyValue]
   )

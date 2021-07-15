@@ -73,7 +73,7 @@ export const StyledInput = styled.input`
   font-size: 14px;
   padding-left: 14px;
 
-  [type='number'] {
+  &[type='number'] {
     -moz-appearance: textfield;
   }
   ::-webkit-outer-spin-button,

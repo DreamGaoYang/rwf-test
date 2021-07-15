@@ -20,11 +20,11 @@ import { useTokenBalance } from '../../state/wallet/hooks'
 import { StyledInternalLink } from '../../theme'
 import { currencyId } from '../../utils/currencyId'
 import AppBody from '../AppBody'
-import { Dots } from '../Pool/styleds'
 import { BlueCard } from '../../components/Card'
 import { TYPE } from '../../theme'
 import { useLocation } from 'react-router'
 import { Trans } from '@lingui/macro'
+import styled from 'styled-components'
 
 enum Fields {
   TOKEN0 = 0,
@@ -58,9 +58,9 @@ export default function PoolFinder() {
     pairState === PairState.NOT_EXISTS ||
     Boolean(
       pairState === PairState.EXISTS &&
-        pair &&
-        JSBI.equal(pair.reserve0.quotient, JSBI.BigInt(0)) &&
-        JSBI.equal(pair.reserve1.quotient, JSBI.BigInt(0))
+      pair &&
+      JSBI.equal(pair.reserve0.quotient, JSBI.BigInt(0)) &&
+      JSBI.equal(pair.reserve1.quotient, JSBI.BigInt(0))
     )
 
   const position: CurrencyAmount<Token> | undefined = useTokenBalance(account ?? undefined, pair?.liquidityToken)
@@ -80,6 +80,27 @@ export default function PoolFinder() {
   const handleSearchDismiss = useCallback(() => {
     setShowSearch(false)
   }, [setShowSearch])
+
+  const Dots = styled.span`
+  &::after {
+    display: inline-block;
+    animation: ellipsis 1.25s infinite;
+    content: '.';
+    width: 1em;
+    text-align: left;
+  }
+  @keyframes ellipsis {
+    0% {
+      content: '.';
+    }
+    33% {
+      content: '..';
+    }
+    66% {
+      content: '...';
+    }
+  }
+`
 
   const prerequisiteMessage = (
     <LightCard padding="45px 10px">

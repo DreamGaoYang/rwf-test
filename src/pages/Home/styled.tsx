@@ -116,20 +116,22 @@ export const Key__icon = styled.div`
   display: flex;
   margin-right: 10px;
 `
-
-export const Key__text = styled.span`
-
+interface Key__textProps {
+  withIcon?: boolean
+  withColor?: string
+}
+export const Key__text = styled.span<Key__textProps>`
+  font-size: ${(props) => props.withIcon ? '18px' : '16px'};
 `
-export const Available_Balance = styled.div`
+export const Available_Balance = styled.div<Key__textProps>`
+  font-size: ${(props) => props.withIcon ? '18px' : '16px'};
+  color: ${(props) => props.withColor ? props.withColor === 'supply' ? '#FF973C' : '#05C7A0' : ''};
 `
 
 
 // Operation Card
 export const OperationCard = styled.div`
   width: 384px;
-  background: #121B2A;
-  border-radius: 6px;
-  padding: 0 20px 20px;
   margin-left: 20px;
 
   @media (max-width: 1199px) {
@@ -137,6 +139,11 @@ export const OperationCard = styled.div`
     margin: 0 auto;
     margin-bottom: 20px;
   }
+`
+export const OperationCard__content = styled.div`
+  background: #121B2A;
+  border-radius: 6px;
+  padding: 0 20px 20px;
 `
 export const Tab__wrap = styled.div`
   font-size: 16px;
@@ -180,15 +187,22 @@ export const Tab = styled.div<TabProps>`
 // DetailInfo
 export const DetailInfo = styled.div`
   width: 324px;
-  background: #121B2A;
-  border-radius: 4px;
-  padding: 20px;
 
   @media (max-width: 1199px) {
     width: 94%;
     margin: 0 auto;
     margin-bottom: 20px;
   }
+`
+export const DetailInfo__content = styled.div`
+  background: #121B2A;
+  border-radius: 4px;
+  padding: 20px;
+`
+export const Pool__Info = styled.div`
+  font-size: 18px;
+  line-height: 60px;
+  font-weight: 600;
 `
 export const Item = styled.div`
   display: flex;
@@ -248,7 +262,7 @@ export const PoolName = styled.div`
 export const PoolAPY = styled.div`
   width: 15%;
   @media (max-width: 1199px) {
-    flex: 1;
+    flex: 0.6;
   }
 `
 export const PoolAboutUsers = styled.div`
@@ -270,6 +284,13 @@ export const PoolDetail = styled.div<PoolDetailProps>`
     margin-bottom: -2px;
     margin-left: 5px;
     transform: ${(props) => props.isOpenDetail ? 'rotateX(0deg)' : 'rotateX(180deg)'};
+  }
+
+  @media (max-width: 1199px) {
+    flex: 0.4;
+    span {
+      display: none;
+    }
   }
 `
 

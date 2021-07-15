@@ -41,9 +41,12 @@ import {
   Key__text,
   Available_Balance,
   OperationCard,
+  OperationCard__content,
   Tab__wrap,
   Tab,
   DetailInfo,
+  DetailInfo__content,
+  Pool__Info,
   Item,
   Item__title,
   Item__value,
@@ -209,7 +212,7 @@ export default function SupplyMint() {
 
   /**
    * 4个操作:
-   *  supply withdraw  mint burn
+   *  supply withdraw  borrow repay
   **/
   async function onAttemptToSupply() {
     try {
@@ -341,231 +344,262 @@ export default function SupplyMint() {
             <Card_wrap>
               {/* 左侧信息栏 */}
               <DetailInfo>
-                <Item>
-                  <Item__title>Collateral Balance</Item__title>
-                  <Item__value>{
-                    accountTotalValue ?
-                      '$' + format_num_to_K(format_bn(accountTotalValue[1].toString(), 18, 2)) : '...'
-                  }</Item__value>
-                </Item>
-                <Item>
-                  <Item__title>Collateral Ratio</Item__title>
-                  <Item__value>{
-                    accountTotalValue ?
-                      format_bn(accountTotalValue[3].toString(), 18, 2) : '...'
-                  }</Item__value>
-                </Item>
-                <Item>
-                  <Item__title>Borrow Cap</Item__title>
-                  <Item__value>{
-                    borrowTokenData && accountBorrowData ?
-                      format_num_to_K(format_bn(borrowTokenData[1].toString(), accountBorrowData[5].toString(), 2)) : '...'
-                  }</Item__value>
-                </Item>
-                <Item>
-                  <Item__title>Asset maturity</Item__title>
-                  <Item__value>{'12 Months'}</Item__value>
-                </Item>
-                <Item>
-                  <Item__title>End Time</Item__title>
-                  <Item__value>{'2022/12/12 12:00 '}</Item__value>
-                </Item>
-                <Item>
-                  <Item__title>Current APY</Item__title>
-                  <Item__value>{
-                    borrowTokenData ?
-                      format_bn(borrowTokenData[2].toString(), 16, 2) + '%' : '...'
-                  }</Item__value>
-                </Item>
-                <Item>
-                  <Item__title>After Date APY</Item__title>
-                  <Item__value>{'15.00%'}</Item__value>
-                </Item>
-
-
+                <Pool__Info>Pool Info</Pool__Info>
+                <DetailInfo__content>
+                  <Item>
+                    <Item__title>Collateral Balance</Item__title>
+                    <Item__value>{
+                      accountTotalValue ?
+                        '$' + format_num_to_K(format_bn(accountTotalValue[1].toString(), 18, 2)) : '...'
+                    }</Item__value>
+                  </Item>
+                  <Item>
+                    <Item__title>Collateral Ratio</Item__title>
+                    <Item__value>{
+                      accountTotalValue ?
+                        format_bn(accountTotalValue[3].toString(), 18, 2) : '...'
+                    }</Item__value>
+                  </Item>
+                  <Item>
+                    <Item__title>Borrow Cap</Item__title>
+                    <Item__value>{
+                      borrowTokenData && accountBorrowData ?
+                        format_num_to_K(format_bn(borrowTokenData[1].toString(), accountBorrowData[5].toString(), 2)) : '...'
+                    }</Item__value>
+                  </Item>
+                  <Item>
+                    <Item__title>Asset maturity</Item__title>
+                    <Item__value>{'12 Months'}</Item__value>
+                  </Item>
+                  <Item>
+                    <Item__title>End Time</Item__title>
+                    <Item__value>{'2022/12/12 12:00 '}</Item__value>
+                  </Item>
+                  <Item>
+                    <Item__title>Current APY</Item__title>
+                    <Item__value>{
+                      borrowTokenData ?
+                        format_bn(borrowTokenData[2].toString(), 16, 2) + '%' : '...'
+                    }</Item__value>
+                  </Item>
+                  <Item>
+                    <Item__title>After Date APY</Item__title>
+                    <Item__value>{'15.00%'}</Item__value>
+                  </Item>
+                </DetailInfo__content>
               </DetailInfo>
+
+
               {/* supply 存款栏 */}
               <OperationCard>
-                <Tab__wrap>
-                  <Tab type='supply' className={curTab__supply ? 'active' : ''} onClick={() => { setCurTab__supply(true) }}>
-                    SUPPLY
-                  </Tab>
-                  <Tab type='supply' className={!curTab__supply ? 'active' : ''} onClick={() => { setCurTab__supply(false) }}>
-                    WITHDRAW
-                  </Tab>
-                </Tab__wrap>
-                {
-                  curTab__supply ?
-                    <>
-                      <Key__and__Value>
-                        <Key>
-                          <Key__icon>
-                            <img src={img_USDC} alt="" />
-                          </Key__icon>
-                          <Key__text>USDC Balance</Key__text>
-                        </Key>
-                        <Available_Balance>
-                          {
-                            accountSupplyData ?
-                              format_num_to_K(format_bn(accountSupplyData[1].toString(), accountSupplyData[6].toString(), 2))
-                              :
-                              '...'
-                          }
-                        </Available_Balance>
-                      </Key__and__Value>
-                      {
-                        allowance__USDC && new BigNumber(allowance__USDC).gt(new BigNumber(0)) &&
-                        <>
-                          <Input_wrap>
-                            <StyledInput
-                              type="number"
-                              pattern="^[0-9]*[.,]?[0-9]*$"
-                              placeholder='Amount'
-                              value={value__supply}
-                              onChange={(e) => { supply__change(e.target.value) }}
-                            />
-                            <StyledMAX type='supply' onClick={supply__max}>MAX</StyledMAX>
-                          </Input_wrap>
-                          <Styled_Btn
-                            type='supply'
-                            onClick={onAttemptToSupply}>
-                            SUPPLY
-                          </Styled_Btn>
-                        </>
-                      }
-                      {
-                        !(allowance__USDC && new BigNumber(allowance__USDC).gt(new BigNumber(0))) &&
-                        <>
-                          <EnableFirst>You must enable OST before supplying for the first time.</EnableFirst>
-                          <Styled_Btn type='supply' onClick={() => { onAttemptToApprove(Contract__USDC, true) }}>ENABLE</Styled_Btn>
-                        </>
-                      }
-                    </>
-                    :
-                    <>
-                      <Key__and__Value>
-                        <Key>
-                          <Key__icon>
-                            <img src={img_USDC} alt="" />
-                          </Key__icon>
-                          <Key__text>Available to Withdraw</Key__text>
-                        </Key>
-                        <Available_Balance>
-                          {
-                            accountSupplyData ?
-                              format_num_to_K(format_bn(accountSupplyData[4].toString(), accountSupplyData[6].toString(), 2))
-                              :
-                              '...'
-                          }
-                        </Available_Balance>
-                      </Key__and__Value>
-                      <Input_wrap>
-                        <StyledInput
-                          type="number"
-                          pattern="^[0-9]*[.,]?[0-9]*$"
-                          placeholder='Amount'
-                          value={value__withdraw}
-                          onChange={(e) => { withdraw__change(e.target.value) }}
-                        />
-                        <StyledMAX type='supply' onClick={withdraw__max}>MAX</StyledMAX>
-                      </Input_wrap>
-                      <Styled_Btn
-                        type='supply'
-                        onClick={onAttemptToWithdraw}>
-                        WITHDRAW
-                      </Styled_Btn>
-                    </>
-                }
+                <Key__and__Value>
+                  <Key>
+                    <Key__icon>
+                      <img src={img_USDC} alt="" />
+                    </Key__icon>
+                    <Key__text withIcon={true}>USDC Supplied</Key__text>
+                  </Key>
+                  <Available_Balance withIcon={true} withColor='supply'>
+                    {
+                      accountSupplyData ?
+                        format_num_to_K(format_bn(accountSupplyData[0].toString(), accountSupplyData[6].toString(), 2))
+                        :
+                        '...'
+                    }
+                  </Available_Balance>
+                </Key__and__Value>
+
+                <OperationCard__content>
+                  <Tab__wrap>
+                    <Tab type='supply' className={curTab__supply ? 'active' : ''} onClick={() => { setCurTab__supply(true) }}>
+                      SUPPLY
+                    </Tab>
+                    <Tab type='supply' className={!curTab__supply ? 'active' : ''} onClick={() => { setCurTab__supply(false) }}>
+                      WITHDRAW
+                    </Tab>
+                  </Tab__wrap>
+                  {
+                    curTab__supply ?
+                      <>
+                        <Key__and__Value>
+                          <Key>
+                            <Key__text>USDC Balance</Key__text>
+                          </Key>
+                          <Available_Balance>
+                            {
+                              accountSupplyData ?
+                                format_num_to_K(format_bn(accountSupplyData[1].toString(), accountSupplyData[6].toString(), 2))
+                                :
+                                '...'
+                            }
+                          </Available_Balance>
+                        </Key__and__Value>
+                        {
+                          allowance__USDC && new BigNumber(allowance__USDC).gt(new BigNumber(0)) &&
+                          <>
+                            <Input_wrap>
+                              <StyledInput
+                                type="number"
+                                pattern="^[0-9]*[.,]?[0-9]*$"
+                                placeholder='Amount'
+                                value={value__supply}
+                                onChange={(e) => { supply__change(e.target.value) }}
+                              />
+                              <StyledMAX type='supply' onClick={supply__max}>MAX</StyledMAX>
+                            </Input_wrap>
+                            <Styled_Btn
+                              type='supply'
+                              onClick={onAttemptToSupply}>
+                              SUPPLY
+                            </Styled_Btn>
+                          </>
+                        }
+                        {
+                          !(allowance__USDC && new BigNumber(allowance__USDC).gt(new BigNumber(0))) &&
+                          <>
+                            <EnableFirst>You must enable OST before supplying for the first time.</EnableFirst>
+                            <Styled_Btn type='supply' onClick={() => { onAttemptToApprove(Contract__USDC, true) }}>ENABLE</Styled_Btn>
+                          </>
+                        }
+                      </>
+                      :
+                      <>
+                        <Key__and__Value>
+                          <Key>
+                            <Key__text>Available to Withdraw</Key__text>
+                          </Key>
+                          <Available_Balance>
+                            {
+                              accountSupplyData ?
+                                format_num_to_K(format_bn(accountSupplyData[4].toString(), accountSupplyData[6].toString(), 2))
+                                :
+                                '...'
+                            }
+                          </Available_Balance>
+                        </Key__and__Value>
+                        <Input_wrap>
+                          <StyledInput
+                            type="number"
+                            pattern="^[0-9]*[.,]?[0-9]*$"
+                            placeholder='Amount'
+                            value={value__withdraw}
+                            onChange={(e) => { withdraw__change(e.target.value) }}
+                          />
+                          <StyledMAX type='supply' onClick={withdraw__max}>MAX</StyledMAX>
+                        </Input_wrap>
+                        <Styled_Btn
+                          type='supply'
+                          onClick={onAttemptToWithdraw}>
+                          WITHDRAW
+                        </Styled_Btn>
+                      </>
+                  }
+                </OperationCard__content>
               </OperationCard>
-              {/* mint 铸币栏 */}
+
+
+              {/* borrow 铸币栏 */}
               <OperationCard>
-                <Tab__wrap>
-                  <Tab type='mint' className={curTab__mint ? 'active' : ''} onClick={() => { setCurTab__mint(true) }}>
-                    MINT
-                  </Tab>
-                  <Tab type='mint' className={!curTab__mint ? 'active' : ''} onClick={() => { setCurTab__mint(false) }}>
-                    BURN
-                  </Tab>
-                </Tab__wrap>
-                {
-                  curTab__mint ?
-                    <>
-                      <Key__and__Value>
-                        <Key>
-                          <Key__icon>
-                            <img src={img_USX} alt="" />
-                          </Key__icon>
-                          <Key__text>Available to Mint</Key__text>
-                        </Key>
-                        <Available_Balance>
-                          {
-                            accountBorrowData ?
-                              format_num_to_K(format_bn(accountBorrowData[2].toString(), accountBorrowData[5].toString(), 2))
-                              :
-                              '...'
-                          }
-                        </Available_Balance>
-                      </Key__and__Value>
-                      <Input_wrap>
-                        <StyledInput
-                          type="number"
-                          pattern="^[0-9]*[.,]?[0-9]*$"
-                          placeholder='Amount'
-                          value={value__borrow}
-                          onChange={(e) => { borrow__change(e.target.value) }}
-                        />
-                        <StyledMAX type='mint' onClick={borrow__max}>MAX</StyledMAX>
-                      </Input_wrap>
-                      <Styled_Btn type='mint'
-                        onClick={onAttemptToBorrow}>
-                        MINT
-                      </Styled_Btn>
-                    </>
-                    :
-                    <>
-                      <Key__and__Value>
-                        <Key>
-                          <Key__icon>
-                            <img src={img_USX} alt="" />
-                          </Key__icon>
-                          <Key__text>USX Balance</Key__text>
-                        </Key>
-                        <Available_Balance>
-                          {
-                            accountBorrowData ?
-                              format_num_to_K(format_bn(accountBorrowData[3].toString(), accountBorrowData[5].toString(), 2))
-                              :
-                              '...'
-                          }
-                        </Available_Balance>
-                      </Key__and__Value>
-                      {
-                        allowance__USX && new BigNumber(allowance__USX).gt(new BigNumber(0)) &&
-                        <>
-                          <Input_wrap>
-                            <StyledInput
-                              type="number"
-                              pattern="^[0-9]*[.,]?[0-9]*$"
-                              placeholder='Amount'
-                              value={value__repay}
-                              onChange={(e) => { repay__change(e.target.value) }}
-                            />
-                            <StyledMAX type='mint' onClick={repay__max}>MAX</StyledMAX>
-                          </Input_wrap>
-                          <Styled_Btn type='mint'
-                            onClick={onAttemptToRepay}>
-                            BURN
-                          </Styled_Btn></>
-                      }
-                      {
-                        !(allowance__USX && new BigNumber(allowance__USX).gt(new BigNumber(0))) &&
-                        <>
-                          <EnableFirst>You must enable USX before supplying for the first time.</EnableFirst>
-                          <Styled_Btn type='mint' onClick={() => { onAttemptToApprove(Contract__USX) }}>ENABLE</Styled_Btn>
-                        </>
-                      }
-                    </>
-                }
+                <Key__and__Value>
+                  <Key>
+                    <Key__icon>
+                      <img src={img_USX} alt="" />
+                    </Key__icon>
+                    <Key__text withIcon={true}>USX Borrowed</Key__text>
+                  </Key>
+                  <Available_Balance withIcon={true} withColor='borrow'>
+                    {
+                      accountBorrowData ?
+                        format_num_to_K(format_bn(accountBorrowData[0].toString(), accountBorrowData[5].toString(), 2))
+                        :
+                        '...'
+                    }
+                  </Available_Balance>
+                </Key__and__Value>
+
+                <OperationCard__content>
+                  <Tab__wrap>
+                    <Tab type='borrow' className={curTab__mint ? 'active' : ''} onClick={() => { setCurTab__mint(true) }}>
+                      BORROW
+                    </Tab>
+                    <Tab type='borrow' className={!curTab__mint ? 'active' : ''} onClick={() => { setCurTab__mint(false) }}>
+                      REPAY
+                    </Tab>
+                  </Tab__wrap>
+                  {
+                    curTab__mint ?
+                      <>
+                        <Key__and__Value>
+                          <Key>
+                            <Key__text>Available to Borrow</Key__text>
+                          </Key>
+                          <Available_Balance>
+                            {
+                              accountBorrowData ?
+                                format_num_to_K(format_bn(accountBorrowData[2].toString(), accountBorrowData[5].toString(), 2))
+                                :
+                                '...'
+                            }
+                          </Available_Balance>
+                        </Key__and__Value>
+                        <Input_wrap>
+                          <StyledInput
+                            type="number"
+                            pattern="^[0-9]*[.,]?[0-9]*$"
+                            placeholder='Amount'
+                            value={value__borrow}
+                            onChange={(e) => { borrow__change(e.target.value) }}
+                          />
+                          <StyledMAX type='borrow' onClick={borrow__max}>MAX</StyledMAX>
+                        </Input_wrap>
+                        <Styled_Btn type='borrow'
+                          onClick={onAttemptToBorrow}>
+                          BORROW
+                        </Styled_Btn>
+                      </>
+                      :
+                      <>
+                        <Key__and__Value>
+                          <Key>
+                            <Key__text>USX Balance</Key__text>
+                          </Key>
+                          <Available_Balance>
+                            {
+                              accountBorrowData ?
+                                format_num_to_K(format_bn(accountBorrowData[3].toString(), accountBorrowData[5].toString(), 2))
+                                :
+                                '...'
+                            }
+                          </Available_Balance>
+                        </Key__and__Value>
+                        {
+                          allowance__USX && new BigNumber(allowance__USX).gt(new BigNumber(0)) &&
+                          <>
+                            <Input_wrap>
+                              <StyledInput
+                                type="number"
+                                pattern="^[0-9]*[.,]?[0-9]*$"
+                                placeholder='Amount'
+                                value={value__repay}
+                                onChange={(e) => { repay__change(e.target.value) }}
+                              />
+                              <StyledMAX type='borrow' onClick={repay__max}>MAX</StyledMAX>
+                            </Input_wrap>
+                            <Styled_Btn type='borrow'
+                              onClick={onAttemptToRepay}>
+                              REPAY
+                            </Styled_Btn></>
+                        }
+                        {
+                          !(allowance__USX && new BigNumber(allowance__USX).gt(new BigNumber(0))) &&
+                          <>
+                            <EnableFirst>You must enable USX before supplying for the first time.</EnableFirst>
+                            <Styled_Btn type='borrow' onClick={() => { onAttemptToApprove(Contract__USX) }}>ENABLE</Styled_Btn>
+                          </>
+                        }
+                      </>
+                  }
+                </OperationCard__content>
               </OperationCard>
             </Card_wrap>
 

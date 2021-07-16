@@ -12,16 +12,35 @@ export const MainBody = styled.div<MainBodyProps>`
   transition: 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
 `
 export const Card_wrap = styled.div`
-  display: flex;
+  /* display: flex;
   justify-content: center;
+  align-items: flex-start; */
   padding: 30px 0;
-  align-items: flex-start;
 
   @media (max-width: 1199px) {
     display: block;
   }
 `
+export const Mobile_reverse = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
 
+  @media (max-width: 1199px) {
+    display: flex;
+    flex-direction: column-reverse;
+  }
+`
+export const Mobile_reverse__content = styled.div`
+  display: flex;
+  align-items: flex-start;
+
+  @media (max-width: 1199px) {
+    width: 100%;
+    display: block;
+  }
+`
 
 // Styled_Btn
 interface Styled_Btn_Props {
@@ -52,7 +71,6 @@ export const Styled_Btn = styled.div<Styled_Btn_Props>`
     cursor: not-allowed !important;
   }
 `
-
 
 // Input
 export const Input_wrap = styled.div`

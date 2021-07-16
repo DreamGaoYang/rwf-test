@@ -44,6 +44,13 @@ export const Styled_Btn = styled.div<Styled_Btn_Props>`
     opacity: 1;
     cursor: pointer;
   }
+
+  &.disabled {
+    background: #EFF1F4 !important;
+    color: #9FA4B3 !important;
+    pointer-events: none !important;
+    cursor: not-allowed !important;
+  }
 `
 
 
@@ -213,6 +220,8 @@ export const Item__title = styled.div`
   font-size: 14px;
   font-weight: 500;
   color: #999CA2;
+  display: flex;
+  align-items: center;
 `
 export const Item__value = styled.div`
   font-size: 14px;

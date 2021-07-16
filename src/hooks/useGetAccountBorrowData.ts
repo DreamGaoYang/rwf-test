@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useActiveWeb3React } from './web3'
 import { Contract } from '@ethersproject/contracts'
 import { useBlockNumber } from 'state/application/hooks'
+import { Lending_factor } from '../constants/misc'
 
 
 export function useGetAccountBorrowData(Contract__LendingData: Contract, addr__Pool: string) {
@@ -18,7 +19,7 @@ export function useGetAccountBorrowData(Contract__LendingData: Contract, addr__P
       // Token Balance (uint256)  //  accountBorrowData[3]
       // Max BURN (uint256)  //  accountBorrowData[4]
       // Decimals (uint8)  // accountBorrowData[5]
-      Contract__LendingData.callStatic.getAccountBorrowData(addr__Pool, account, '920000000000000000')
+      Contract__LendingData.callStatic.getAccountBorrowData(addr__Pool, account, Lending_factor)
         .then((res: any) => {
           // console.log('get Account Borrow Data')
           return setAccountBorrowData(res)

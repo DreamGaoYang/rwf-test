@@ -26,6 +26,9 @@ import right_up from '../../assets/svg/right-up.svg'
 import img_USDC from '../../assets/svg/USDC.svg'
 import img_USX from '../../assets/svg/USX.svg'
 
+import { AlertCircle } from 'react-feather'
+import ReactTooltip from 'react-tooltip'
+
 
 import {
   MainBody,
@@ -76,6 +79,11 @@ export default function SupplyMint() {
 
   const [curTab__supply, setCurTab__supply] = useState<boolean>(true)
   const [curTab__mint, setCurTab__mint] = useState<boolean>(true)
+
+  const [isSupplying, setIsSupplying] = useState<boolean>(false)
+  const [isWithdrawing, setIsWithdrawing] = useState<boolean>(false)
+  const [isBorrowing, setIsBorrowing] = useState<boolean>(false)
+  const [isRepaying, setIsRepaying] = useState<boolean>(false)
 
   const [isOpenDetail, setIsOpenDetail] = useState(false)
   const [height, setHeight] = useState<string>('0')
@@ -180,7 +188,7 @@ export default function SupplyMint() {
    * inputs changed
   **/
   const supply__change = (value: string) => {
-    if (value.includes('.') && value.slice(value.indexOf('.')).length > 5) {
+    if (value.includes('.') && value.slice(value.indexOf('.')).length > 7) {
       // console.log(value.slice(value.indexOf('.')).length)
       return
     }
@@ -188,21 +196,21 @@ export default function SupplyMint() {
     setValue__supply(value)
   }
   const withdraw__change = (value: string) => {
-    if (value.includes('.') && value.slice(value.indexOf('.')).length > 5) {
+    if (value.includes('.') && value.slice(value.indexOf('.')).length > 7) {
       return
     }
     setValue__withdraw__max(false)
     setValue__withdraw(value)
   }
   const borrow__change = (value: string) => {
-    if (value.includes('.') && value.slice(value.indexOf('.')).length > 5) {
+    if (value.includes('.') && value.slice(value.indexOf('.')).length > 7) {
       return
     }
     setValue__borrow__max(false)
     setValue__borrow(value)
   }
   const repay__change = (value: string) => {
-    if (value.includes('.') && value.slice(value.indexOf('.')).length > 5) {
+    if (value.includes('.') && value.slice(value.indexOf('.')).length > 7) {
       return
     }
     setValue__repay__max(false)
@@ -215,6 +223,9 @@ export default function SupplyMint() {
    *  supply withdraw  borrow repay
   **/
   async function onAttemptToSupply() {
+    if ((Number(value__supply) === 0) || isSupplying) {
+      return console.log('input number is 0... || isSupplying')
+    }
     try {
       // console.log(value__supply)
       const bnToString = value__supply__max ?
@@ -224,13 +235,19 @@ export default function SupplyMint() {
           .multipliedBy(new BigNumber(10).pow(new BigNumber(accountSupplyData[6].toString())))
           .toString()
       console.log(bnToString)
+      setIsSupplying(true)
       await supply(bnToString)
       setValue__supply('')
+      setIsSupplying(false)
     } catch (error) {
       console.log(error)
+      setIsSupplying(false)
     }
   }
   async function onAttemptToWithdraw() {
+    if ((Number(value__withdraw) === 0) || isWithdrawing) {
+      return console.log('input number is 0... || isWithdrawing')
+    }
     try {
       // console.log(value__withdraw)
       const bnToString = new BigNumber(value__withdraw)
@@ -241,6 +258,7 @@ export default function SupplyMint() {
         accountSupplyData[0] === accountSupplyData[4] &&
         accountSupplyData[3] === accountSupplyData[4]
 
+      setIsWithdrawing(true)
       await withdraw(
         value__withdraw__max ?
           is_equal ? accountSupplyData[5].toString() : accountSupplyData[4].toString()
@@ -252,11 +270,16 @@ export default function SupplyMint() {
           "redeemUnderlying"
       )
       setValue__withdraw('')
+      setIsWithdrawing(false)
     } catch (error) {
       console.log(error)
+      setIsWithdrawing(false)
     }
   }
   async function onAttemptToBorrow() {
+    if ((Number(value__borrow) === 0) || isBorrowing) {
+      return console.log('input number is 0... || isBorrowing')
+    }
     try {
       // console.log(value__borrow)
       const bnToString = value__borrow__max ?
@@ -266,13 +289,19 @@ export default function SupplyMint() {
           .multipliedBy(new BigNumber(10).pow(new BigNumber(accountBorrowData[5].toString())))
           .toString()
       console.log(bnToString)
+      setIsBorrowing(true)
       await borrow(bnToString)
       setValue__borrow('')
+      setIsBorrowing(false)
     } catch (error) {
       console.log(error)
+      setIsBorrowing(false)
     }
   }
   async function onAttemptToRepay() {
+    if ((Number(value__repay) === 0) || isRepaying) {
+      return console.log('input number is 0... || isRepaying')
+    }
     try {
       // console.log(value__repay)
       const bnToString = value__repay__max ?
@@ -282,10 +311,13 @@ export default function SupplyMint() {
           .multipliedBy(new BigNumber(10).pow(new BigNumber(accountBorrowData[5].toString())))
           .toString()
       // console.log(bnToString)
+      setIsRepaying(true)
       await repay(bnToString)
       setValue__repay('')
+      setIsRepaying(false)
     } catch (error) {
       console.log(error)
+      setIsRepaying(false)
     }
   }
 
@@ -347,25 +379,41 @@ export default function SupplyMint() {
                 <Pool__Info>Pool Info</Pool__Info>
                 <DetailInfo__content>
                   <Item>
-                    <Item__title>Collateral Balance</Item__title>
-                    <Item__value>{
-                      accountTotalValue ?
-                        '$' + format_num_to_K(format_bn(accountTotalValue[1].toString(), 18, 2)) : '...'
-                    }</Item__value>
-                  </Item>
-                  <Item>
-                    <Item__title>Collateral Ratio</Item__title>
-                    <Item__value>{
-                      accountTotalValue ?
-                        format_bn(accountTotalValue[3].toString(), 18, 2) : '...'
-                    }</Item__value>
-                  </Item>
-                  <Item>
-                    <Item__title>Borrow Cap</Item__title>
+                    <Item__title>
+                      <span>Borrow Cap</span>
+                      <a data-tip data-for={"borrow__cap"} style={{ marginLeft: "5px", display: 'flex' }}>
+                        <AlertCircle size="16" color="#888D9B" />
+                      </a>
+                      <>
+                        <ReactTooltip
+                          id={"borrow__cap"}
+                          place="top"
+                          type="light"
+                          effect="float"
+                          className="tooltip"
+                          textColor={`#9195A4`}
+                          borderColor={"#E8ECEF"}
+                          border={true}
+                        >
+                          <span>
+                            {'Borrow Cap Tipd'}
+                          </span>
+                        </ReactTooltip>
+                      </>
+
+                    </Item__title>
                     <Item__value>{
                       borrowTokenData && accountBorrowData ?
                         format_num_to_K(format_bn(borrowTokenData[1].toString(), accountBorrowData[5].toString(), 2)) : '...'
                     }</Item__value>
+                  </Item>
+                  <Item>
+                    <Item__title>Borrowed</Item__title>
+                    <Item__value>{'...'}</Item__value>
+                  </Item>
+                  <Item>
+                    <Item__title>Remaining</Item__title>
+                    <Item__value>{'...'}</Item__value>
                   </Item>
                   <Item>
                     <Item__title>Asset maturity</Item__title>
@@ -376,15 +424,11 @@ export default function SupplyMint() {
                     <Item__value>{'2022/12/12 12:00 '}</Item__value>
                   </Item>
                   <Item>
-                    <Item__title>Current APY</Item__title>
+                    <Item__title>APY</Item__title>
                     <Item__value>{
                       borrowTokenData ?
                         format_bn(borrowTokenData[2].toString(), 16, 2) + '%' : '...'
                     }</Item__value>
-                  </Item>
-                  <Item>
-                    <Item__title>After Date APY</Item__title>
-                    <Item__value>{'15.00%'}</Item__value>
                   </Item>
                 </DetailInfo__content>
               </DetailInfo>
@@ -448,6 +492,7 @@ export default function SupplyMint() {
                               <StyledMAX type='supply' onClick={supply__max}>MAX</StyledMAX>
                             </Input_wrap>
                             <Styled_Btn
+                              className={isSupplying ? 'disable' : ''}
                               type='supply'
                               onClick={onAttemptToSupply}>
                               SUPPLY
@@ -488,6 +533,7 @@ export default function SupplyMint() {
                           <StyledMAX type='supply' onClick={withdraw__max}>MAX</StyledMAX>
                         </Input_wrap>
                         <Styled_Btn
+                          className={isWithdrawing ? 'disable' : ''}
                           type='supply'
                           onClick={onAttemptToWithdraw}>
                           WITHDRAW
@@ -552,7 +598,9 @@ export default function SupplyMint() {
                           />
                           <StyledMAX type='borrow' onClick={borrow__max}>MAX</StyledMAX>
                         </Input_wrap>
-                        <Styled_Btn type='borrow'
+                        <Styled_Btn
+                          className={isBorrowing ? 'disable' : ''}
+                          type='borrow'
                           onClick={onAttemptToBorrow}>
                           BORROW
                         </Styled_Btn>
@@ -585,7 +633,9 @@ export default function SupplyMint() {
                               />
                               <StyledMAX type='borrow' onClick={repay__max}>MAX</StyledMAX>
                             </Input_wrap>
-                            <Styled_Btn type='borrow'
+                            <Styled_Btn
+                              className={isRepaying ? 'disable' : ''}
+                              type='borrow'
                               onClick={onAttemptToRepay}>
                               REPAY
                             </Styled_Btn></>
@@ -593,7 +643,7 @@ export default function SupplyMint() {
                         {
                           !(allowance__USX && new BigNumber(allowance__USX).gt(new BigNumber(0))) &&
                           <>
-                            <EnableFirst>You must enable USX before supplying for the first time.</EnableFirst>
+                            <EnableFirst>You must enable USX before repaying for the first time.</EnableFirst>
                             <Styled_Btn type='borrow' onClick={() => { onAttemptToApprove(Contract__USX) }}>ENABLE</Styled_Btn>
                           </>
                         }

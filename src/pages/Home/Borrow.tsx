@@ -69,6 +69,9 @@ export default function Borrow() {
 
   const [curTab__borrow, setCurTab__borrow] = useState<boolean>(true)
 
+  const [isBorrowing, setIsBorrowing] = useState<boolean>(false)
+  const [isRepaying, setIsRepaying] = useState<boolean>(false)
+
   const [isOpenDetail, setIsOpenDetail] = useState(false)
   const [height, setHeight] = useState<string>('0')
 
@@ -143,14 +146,14 @@ export default function Borrow() {
    * inputs changed
   **/
   const borrow__change = (value: string) => {
-    if (value.includes('.') && value.slice(value.indexOf('.')).length > 5) {
+    if (value.includes('.') && value.slice(value.indexOf('.')).length > 7) {
       return
     }
     setValue__borrow__max(false)
     setValue__borrow(value)
   }
   const repay__change = (value: string) => {
-    if (value.includes('.') && value.slice(value.indexOf('.')).length > 5) {
+    if (value.includes('.') && value.slice(value.indexOf('.')).length > 7) {
       return
     }
     setValue__repay__max(false)
@@ -163,6 +166,9 @@ export default function Borrow() {
    *  borrow repay
   **/
   async function onAttemptToBorrow() {
+    if ((Number(value__borrow) === 0) || isBorrowing) {
+      return console.log('input number is 0... || isBorrowing')
+    }
     try {
       // console.log(value__borrow)
       const bnToString = value__borrow__max ?
@@ -172,13 +178,19 @@ export default function Borrow() {
           .multipliedBy(new BigNumber(10).pow(new BigNumber(accountBorrowData[5].toString())))
           .toString()
       console.log(bnToString)
+      setIsBorrowing(true)
       await borrow(bnToString)
       setValue__borrow('')
+      setIsBorrowing(false)
     } catch (error) {
       console.log(error)
+      setIsBorrowing(false)
     }
   }
   async function onAttemptToRepay() {
+    if ((Number(value__repay) === 0) || isRepaying) {
+      return console.log('input number is 0... || isRepaying')
+    }
     try {
       // console.log(value__repay)
       const bnToString = value__repay__max ?
@@ -188,10 +200,13 @@ export default function Borrow() {
           .multipliedBy(new BigNumber(10).pow(new BigNumber(accountBorrowData[5].toString())))
           .toString()
       // console.log(bnToString)
+      setIsRepaying(true)
       await repay(bnToString)
       setValue__repay('')
+      setIsRepaying(false)
     } catch (error) {
       console.log(error)
+      setIsRepaying(false)
     }
   }
 
@@ -259,6 +274,14 @@ export default function Borrow() {
                     }</Item__value>
                   </Item>
                   <Item>
+                    <Item__title>Borrowed</Item__title>
+                    <Item__value>{'...'}</Item__value>
+                  </Item>
+                  <Item>
+                    <Item__title>Remaining</Item__title>
+                    <Item__value>{'...'}</Item__value>
+                  </Item>
+                  <Item>
                     <Item__title>Asset maturity</Item__title>
                     <Item__value>{'12 Months'}</Item__value>
                   </Item>
@@ -267,7 +290,7 @@ export default function Borrow() {
                     <Item__value>{'2022/12/12 12:00 '}</Item__value>
                   </Item>
                   <Item>
-                    <Item__title>Current APY</Item__title>
+                    <Item__title>APY</Item__title>
                     <Item__value>{
                       borrowTokenData ?
                         format_bn(borrowTokenData[2].toString(), 16, 2) + '%' : '...'
@@ -333,7 +356,9 @@ export default function Borrow() {
                           />
                           <StyledMAX type='borrow' onClick={borrow__max}>MAX</StyledMAX>
                         </Input_wrap>
-                        <Styled_Btn type='borrow'
+                        <Styled_Btn
+                          className={isBorrowing ? 'disable' : ''}
+                          type='borrow'
                           onClick={onAttemptToBorrow}>
                           BORROW
                         </Styled_Btn>
@@ -366,7 +391,9 @@ export default function Borrow() {
                               />
                               <StyledMAX type='borrow' onClick={repay__max}>MAX</StyledMAX>
                             </Input_wrap>
-                            <Styled_Btn type='borrow'
+                            <Styled_Btn
+                              className={isRepaying ? 'disable' : ''}
+                              type='borrow'
                               onClick={onAttemptToRepay}>
                               REPAY
                             </Styled_Btn></>
@@ -374,7 +401,7 @@ export default function Borrow() {
                         {
                           !(allowance__USX && new BigNumber(allowance__USX).gt(new BigNumber(0))) &&
                           <>
-                            <EnableFirst>You must enable USX before supplying for the first time.</EnableFirst>
+                            <EnableFirst>You must enable USX before repaying for the first time.</EnableFirst>
                             <Styled_Btn type='borrow' onClick={() => { onAttemptToApprove(Contract__USX) }}>ENABLE</Styled_Btn>
                           </>
                         }

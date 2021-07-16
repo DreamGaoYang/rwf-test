@@ -166,22 +166,22 @@ export default function SupplyMint() {
   **/
   const supply__max = () => {
     setValue__supply__max(true)
-    const toShow = format_bn(accountSupplyData[1].toString(), accountSupplyData[6].toString(), 4)
+    const toShow = format_bn(accountSupplyData[1].toString(), accountSupplyData[6].toString(), 6)
     setValue__supply(toShow)
   }
   const withdraw__max = () => {
     setValue__withdraw__max(true)
-    const toShow = format_bn(accountSupplyData[4].toString(), accountSupplyData[6].toString(), 4)
+    const toShow = format_bn(accountSupplyData[4].toString(), accountSupplyData[6].toString(), 6)
     setValue__withdraw(toShow)
   }
   const borrow__max = () => {
     setValue__borrow__max(true)
-    const toShow = format_bn(accountBorrowData[2].toString(), accountBorrowData[5].toString(), 4)
+    const toShow = format_bn(accountBorrowData[2].toString(), accountBorrowData[5].toString(), 6)
     setValue__borrow(toShow)
   }
   const repay__max = () => {
     setValue__repay__max(true)
-    const toShow = format_bn(accountBorrowData[4].toString(), accountBorrowData[5].toString(), 4)
+    const toShow = format_bn(accountBorrowData[4].toString(), accountBorrowData[5].toString(), 6)
     setValue__repay(toShow)
   }
 
@@ -190,33 +190,80 @@ export default function SupplyMint() {
    * inputs changed
   **/
   const supply__change = (value: string) => {
-    if (value.includes('.') && value.slice(value.indexOf('.')).length > 7) {
-      // console.log(value.slice(value.indexOf('.')).length)
-      return
+    try {
+      if (value.includes('.') && value.slice(value.indexOf('.')).length > 7) {
+        return
+      }
+      if (
+        new BigNumber(value)
+          .multipliedBy(new BigNumber(10).pow(new BigNumber(accountSupplyData[6].toString())))
+          .gt(new BigNumber(accountSupplyData[1].toString()))
+      ) {
+        console.log('gt')
+        return supply__max()
+      }
+      setValue__supply__max(false)
+      setValue__supply(value)
+    } catch (err) {
+      console.log(err)
     }
-    setValue__supply__max(false)
-    setValue__supply(value)
   }
   const withdraw__change = (value: string) => {
-    if (value.includes('.') && value.slice(value.indexOf('.')).length > 7) {
-      return
+    try {
+      if (value.includes('.') && value.slice(value.indexOf('.')).length > 7) {
+        return
+      }
+      if (
+        new BigNumber(value)
+          .multipliedBy(new BigNumber(10).pow(new BigNumber(accountSupplyData[6].toString())))
+          .gt(new BigNumber(accountSupplyData[4].toString()))
+      ) {
+        console.log('gt')
+        return withdraw__max()
+      }
+      setValue__withdraw__max(false)
+      setValue__withdraw(value)
+    } catch (err) {
+      console.log(err)
     }
-    setValue__withdraw__max(false)
-    setValue__withdraw(value)
   }
   const borrow__change = (value: string) => {
-    if (value.includes('.') && value.slice(value.indexOf('.')).length > 7) {
-      return
+    try {
+      if (value.includes('.') && value.slice(value.indexOf('.')).length > 7) {
+        return
+      }
+      if (
+        new BigNumber(value)
+          .multipliedBy(new BigNumber(10).pow(new BigNumber(accountBorrowData[5].toString())))
+          .gt(new BigNumber(accountBorrowData[2].toString()))
+      ) {
+        console.log('gt')
+        return borrow__max()
+      }
+      setValue__borrow__max(false)
+      setValue__borrow(value)
+    } catch (err) {
+      console.log(err)
     }
-    setValue__borrow__max(false)
-    setValue__borrow(value)
   }
   const repay__change = (value: string) => {
-    if (value.includes('.') && value.slice(value.indexOf('.')).length > 7) {
-      return
+    try {
+      if (value.includes('.') && value.slice(value.indexOf('.')).length > 7) {
+        return
+      }
+      if (
+        new BigNumber(value)
+          .multipliedBy(new BigNumber(10).pow(new BigNumber(accountBorrowData[5].toString())))
+          .gt(new BigNumber(accountBorrowData[4].toString()))
+      ) {
+        console.log('gt')
+        return repay__max()
+      }
+      setValue__repay__max(false)
+      setValue__repay(value)
+    } catch (err) {
+      console.log(err)
     }
-    setValue__repay__max(false)
-    setValue__repay(value)
   }
 
 

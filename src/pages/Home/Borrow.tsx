@@ -133,12 +133,12 @@ export default function Borrow() {
   **/
   const borrow__max = () => {
     setValue__borrow__max(true)
-    const toShow = format_bn(accountBorrowData[2].toString(), accountBorrowData[5].toString(), 4)
+    const toShow = format_bn(accountBorrowData[2].toString(), accountBorrowData[5].toString(), 6)
     setValue__borrow(toShow)
   }
   const repay__max = () => {
     setValue__repay__max(true)
-    const toShow = format_bn(accountBorrowData[4].toString(), accountBorrowData[5].toString(), 4)
+    const toShow = format_bn(accountBorrowData[4].toString(), accountBorrowData[5].toString(), 6)
     setValue__repay(toShow)
   }
 
@@ -147,18 +147,42 @@ export default function Borrow() {
    * inputs changed
   **/
   const borrow__change = (value: string) => {
-    if (value.includes('.') && value.slice(value.indexOf('.')).length > 7) {
-      return
+    try {
+      if (value.includes('.') && value.slice(value.indexOf('.')).length > 7) {
+        return
+      }
+      if (
+        new BigNumber(value)
+          .multipliedBy(new BigNumber(10).pow(new BigNumber(accountBorrowData[5].toString())))
+          .gt(new BigNumber(accountBorrowData[2].toString()))
+      ) {
+        console.log('gt')
+        return borrow__max()
+      }
+      setValue__borrow__max(false)
+      setValue__borrow(value)
+    } catch (err) {
+      console.log(err)
     }
-    setValue__borrow__max(false)
-    setValue__borrow(value)
   }
   const repay__change = (value: string) => {
-    if (value.includes('.') && value.slice(value.indexOf('.')).length > 7) {
-      return
+    try {
+      if (value.includes('.') && value.slice(value.indexOf('.')).length > 7) {
+        return
+      }
+      if (
+        new BigNumber(value)
+          .multipliedBy(new BigNumber(10).pow(new BigNumber(accountBorrowData[5].toString())))
+          .gt(new BigNumber(accountBorrowData[4].toString()))
+      ) {
+        console.log('gt')
+        return repay__max()
+      }
+      setValue__repay__max(false)
+      setValue__repay(value)
+    } catch (err) {
+      console.log(err)
     }
-    setValue__repay__max(false)
-    setValue__repay(value)
   }
 
 

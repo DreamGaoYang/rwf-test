@@ -10,9 +10,12 @@ const MobilePopupWrapper = styled.div<{ height: string | number }>`
   max-width: 100%;
   height: ${({ height }) => height};
   margin: ${({ height }) => (height ? '0 auto;' : 0)};
-  margin-bottom: ${({ height }) => (height ? '20px' : 0)}};
-
+  margin-bottom: ${({ height }) => (height ? '20px' : 0)};
   display: none;
+  position: fixed;
+  top: 40px;
+  z-index: 999;
+
   ${({ theme }) => theme.mediaWidth.upToSmall`
     display: block;
   `};
@@ -30,7 +33,7 @@ const MobilePopupInner = styled.div`
   }
 `
 
-const FixedPopupColumn = styled(AutoColumn)<{ extraPadding: boolean }>`
+const FixedPopupColumn = styled(AutoColumn) <{ extraPadding: boolean }>`
   position: fixed;
   top: ${({ extraPadding }) => (extraPadding ? '80px' : '88px')};
   right: 1rem;

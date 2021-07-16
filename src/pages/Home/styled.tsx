@@ -93,7 +93,8 @@ export const StyledInput = styled.input`
   width: 100%;
   height: 48px;
   border-radius: 4px;
-  color: #9598A4;
+  /* color: #9598A4; */
+  color: #111;
   font-weight: 500;
   font-size: 14px;
   padding-left: 14px;

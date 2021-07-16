@@ -1,6 +1,5 @@
 import { Trans } from '@lingui/macro'
 import useScrollPosition from '@react-hook/window-scroll'
-import { useState } from 'react'
 // import { Moon, Sun } from 'react-feather'
 import { Text } from 'rebass'
 // import { useDarkModeManager } from 'state/user/hooks'
@@ -10,7 +9,7 @@ import { useActiveWeb3React } from '../../hooks/web3'
 import Modal from '../Modal'
 import Web3Status from '../Web3Status'
 import NetworkCard from './NetworkCard'
-import UniBalanceContent from './UniBalanceContent'
+
 
 const HeaderFrame = styled.div<{ showBackground: boolean }>`
   /* display: grid; */
@@ -158,22 +157,11 @@ export default function Header() {
   // const [darkMode, toggleDarkMode] = useDarkModeManager()
 
 
-
-
-
-  const [showUniBalanceModal, setShowUniBalanceModal] = useState(false)
-
-
   const scrollY = useScrollPosition()
 
   return (
+    // 标记 修改padding top
     <HeaderFrame showBackground={scrollY > 45}>
-
-      <Modal isOpen={showUniBalanceModal} onDismiss={() => setShowUniBalanceModal(false)}>
-        <UniBalanceContent setShowUniBalanceModal={setShowUniBalanceModal} />
-      </Modal>
-
-
       <HeaderControls>
         <HeaderElement>
           <HideSmall>

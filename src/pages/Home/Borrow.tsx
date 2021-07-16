@@ -218,13 +218,25 @@ export default function Borrow() {
     }
     try {
       // console.log(value__repay)
-      const bnToString = value__repay__max ?
-        accountBorrowData[4].toString()
+      // const bnToString = value__repay__max ?
+      //   accountBorrowData[4].toString()
+      //   :
+      //   new BigNumber(value__repay)
+      //     .multipliedBy(new BigNumber(10).pow(new BigNumber(accountBorrowData[5].toString())))
+      //     .toString()
+      // console.log(bnToString)
+      const max_num = new BigNumber(2)
+        .pow(new BigNumber(256))
+        .minus(new BigNumber(1))
+        .toString();
+
+      const bnToString = value__borrow__max ?
+        new BigNumber(accountBorrowData[3].toString()).gt(new BigNumber(accountBorrowData[4].toString())) ?
+          max_num : accountBorrowData[4].toString()
         :
-        new BigNumber(value__repay)
+        new BigNumber(value__borrow)
           .multipliedBy(new BigNumber(10).pow(new BigNumber(accountBorrowData[5].toString())))
           .toString()
-      // console.log(bnToString)
       setIsRepaying(true)
       await repay(bnToString)
       setValue__repay('')

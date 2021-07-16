@@ -230,7 +230,7 @@ export default function Borrow() {
         .minus(new BigNumber(1))
         .toString();
 
-      const bnToString = value__borrow__max ?
+      const bnToString = value__repay__max ?
         new BigNumber(accountBorrowData[3].toString()).gt(new BigNumber(accountBorrowData[4].toString())) ?
           max_num : accountBorrowData[4].toString()
         :

@@ -64,7 +64,7 @@ export const Styled_Btn = styled.div<Styled_Btn_Props>`
     cursor: pointer;
   }
 
-  &.disabled {
+  &.disable {
     background: #EFF1F4 !important;
     color: #9FA4B3 !important;
     pointer-events: none !important;

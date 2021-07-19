@@ -87,6 +87,9 @@ export default function SupplyMint() {
   const [isBorrowing, setIsBorrowing] = useState<boolean>(false)
   const [isRepaying, setIsRepaying] = useState<boolean>(false)
 
+  const [isEnableing, setIsEnableing] = useState<boolean>(false)
+  const [isEnableing__mint, setIsEnableing__mint] = useState<boolean>(false)
+
   const [isOpenDetail, setIsOpenDetail] = useState(false)
   const [height, setHeight] = useState<string>('0')
 
@@ -140,14 +143,26 @@ export default function SupplyMint() {
 
 
   async function onAttemptToApprove(tokenContract: Contract, iTokenOpts?: boolean) {
-    try {
-      if (iTokenOpts) {
+    if (iTokenOpts) {
+      if (isEnableing) { return console.log('isEnableing...') }
+      try {
+        setIsEnableing(true)
         await approveCallback__iToken(tokenContract)
-      } else {
-        approveCallback__iMSDToken(tokenContract)
+        setIsEnableing(false)
+      } catch (error) {
+        console.log(error)
+        setIsEnableing(false)
       }
-    } catch (error) {
-      console.log(error)
+    } else {
+      if (isEnableing__mint) { return console.log('isEnableing__mint...') }
+      try {
+        setIsEnableing__mint(true)
+        await approveCallback__iMSDToken(tokenContract)
+        setIsEnableing__mint(false)
+      } catch (error) {
+        console.log(error)
+        setIsEnableing__mint(false)
+      }
     }
   }
 
@@ -565,7 +580,12 @@ export default function SupplyMint() {
                               !(allowance__USDC && new BigNumber(allowance__USDC).gt(new BigNumber(0))) &&
                               <>
                                 <EnableFirst>You must enable OST before supplying for the first time.</EnableFirst>
-                                <Styled_Btn type='supply' onClick={() => { onAttemptToApprove(Contract__USDC, true) }}>ENABLE</Styled_Btn>
+                                <Styled_Btn
+                                  className={isEnableing ? 'disable' : ''}
+                                  type='supply'
+                                  onClick={() => { onAttemptToApprove(Contract__USDC, true) }}>
+                                  ENABLE
+                                </Styled_Btn>
                               </>
                             }
                           </>
@@ -706,7 +726,12 @@ export default function SupplyMint() {
                               !(allowance__USX && new BigNumber(allowance__USX).gt(new BigNumber(0))) &&
                               <>
                                 <EnableFirst>You must enable USX before repaying for the first time.</EnableFirst>
-                                <Styled_Btn type='borrow' onClick={() => { onAttemptToApprove(Contract__USX) }}>ENABLE</Styled_Btn>
+                                <Styled_Btn
+                                  className={isEnableing__mint ? 'disable' : ''}
+                                  type='borrow'
+                                  onClick={() => { onAttemptToApprove(Contract__USX) }}>
+                                  ENABLE
+                                </Styled_Btn>
                               </>
                             }
                           </>

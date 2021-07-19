@@ -72,6 +72,7 @@ export default function Borrow() {
 
   const [isBorrowing, setIsBorrowing] = useState<boolean>(false)
   const [isRepaying, setIsRepaying] = useState<boolean>(false)
+  const [isEnableing, setIsEnableing] = useState<boolean>(false)
 
   const [isOpenDetail, setIsOpenDetail] = useState(false)
   const [height, setHeight] = useState<string>('0')
@@ -112,10 +113,14 @@ export default function Borrow() {
 
 
   async function onAttemptToApprove(tokenContract: Contract) {
+    if (isEnableing) { return console.log('isEnableing...') }
     try {
-      approveCallback__iMSDToken(tokenContract)
+      setIsEnableing(true)
+      await approveCallback__iMSDToken(tokenContract)
+      setIsEnableing(false)
     } catch (error) {
       console.log(error)
+      setIsEnableing(false)
     }
   }
 
@@ -441,7 +446,12 @@ export default function Borrow() {
                             !(allowance__USX && new BigNumber(allowance__USX).gt(new BigNumber(0))) &&
                             <>
                               <EnableFirst>You must enable USX before repaying for the first time.</EnableFirst>
-                              <Styled_Btn type='borrow' onClick={() => { onAttemptToApprove(Contract__USX) }}>ENABLE</Styled_Btn>
+                              <Styled_Btn
+                                className={isEnableing ? 'disable' : ''}
+                                type='borrow'
+                                onClick={() => { onAttemptToApprove(Contract__USX) }}>
+                                ENABLE
+                              </Styled_Btn>
                             </>
                           }
                         </>

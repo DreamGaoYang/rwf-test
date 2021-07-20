@@ -103,7 +103,7 @@ export default function SupplyMint() {
   const [value__repay__max, setValue__repay__max] = useState<boolean>(false)
 
 
-  const addr__LendingData = '0x779cc20B0BB9CeF0AeF90f0a2bdc8D71A5eD4859'
+  const addr__LendingData = '0x8C248CAFB0e959bE4f7181C36a09462Fb16f5303'
   const addr__iToken = '0x5021abE0E7d6ce8bdB3F6E01EA0b99E4EfE29174'
   const addr__iMSDToken = '0x218B7375c788B91d9D0ad10080E7CD191f093369'
 
@@ -486,11 +486,24 @@ export default function SupplyMint() {
                     </Item>
                     <Item>
                       <Item__title>Borrowed</Item__title>
-                      <Item__value>{'...'}</Item__value>
+                      <Item__value>{
+                        borrowTokenData && accountBorrowData ?
+                          format_num_to_K(format_bn(borrowTokenData[0].toString(), accountBorrowData[5].toString(), 2)) : '...'
+                      }</Item__value>
                     </Item>
                     <Item>
                       <Item__title>Remaining</Item__title>
-                      <Item__value>{'...'}</Item__value>
+                      <Item__value>{
+                        borrowTokenData && accountBorrowData ?
+                          new BigNumber(borrowTokenData[1].toString()).lt(new BigNumber(borrowTokenData[0].toString())) ? '0' :
+                            format_num_to_K(
+                              format_bn(
+                                new BigNumber(borrowTokenData[1].toString())
+                                  .minus(new BigNumber(borrowTokenData[0].toString()))
+                                  .toString(), accountBorrowData[5].toString(), 2)
+                            )
+                          : '...'
+                      }</Item__value>
                     </Item>
                     <Item>
                       <Item__title>Asset maturity</Item__title>

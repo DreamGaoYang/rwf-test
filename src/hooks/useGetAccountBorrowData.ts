@@ -25,7 +25,7 @@ export function useGetAccountBorrowData(Contract__LendingData: Contract, addr__P
           return setAccountBorrowData(res)
         })
 
-      // Liquidity (uint256)(scaled by 10**Decimals)  //  borrowTokenData[0]
+      // Liquidity (uint256)(scaled by 10**Decimals)  //  borrowTokenData[0]    已经改成 borrowed
       // Borrow Cap (uint256)  //  borrowTokenData[1]
       // Borrow APY (uint256) //  borrowTokenData[2]
       // Token Price (uint256) //  borrowTokenData[3]

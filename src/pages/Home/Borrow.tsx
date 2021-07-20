@@ -83,7 +83,7 @@ export default function Borrow() {
   const [value__repay__max, setValue__repay__max] = useState<boolean>(false)
 
 
-  const addr__LendingData = '0x4faC2eaEd9eA881613ECE4EBE0816FDbB27f2576'
+  const addr__LendingData = '0xEda4C72c11CcE16A60f992edB0A296a811268828'
 
   const addr__iMSDToken = '0xf4f1177399f0E6227F4E98B5841Dcb0b11fBeb90'
 
@@ -318,11 +318,24 @@ export default function Borrow() {
                     </Item>
                     <Item>
                       <Item__title>Borrowed</Item__title>
-                      <Item__value>{'...'}</Item__value>
+                      <Item__value>{
+                        borrowTokenData && accountBorrowData ?
+                          format_num_to_K(format_bn(borrowTokenData[0].toString(), accountBorrowData[5].toString(), 2)) : '...'
+                      }</Item__value>
                     </Item>
                     <Item>
                       <Item__title>Remaining</Item__title>
-                      <Item__value>{'...'}</Item__value>
+                      <Item__value>{
+                        borrowTokenData && accountBorrowData ?
+                          new BigNumber(borrowTokenData[1].toString()).lt(new BigNumber(borrowTokenData[0].toString())) ? '0' :
+                            format_num_to_K(
+                              format_bn(
+                                new BigNumber(borrowTokenData[1].toString())
+                                  .minus(new BigNumber(borrowTokenData[0].toString()))
+                                  .toString(), accountBorrowData[5].toString(), 2)
+                            )
+                          : '...'
+                      }</Item__value>
                     </Item>
                     <Item>
                       <Item__title>Asset maturity</Item__title>

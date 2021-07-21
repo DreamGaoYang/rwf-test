@@ -307,7 +307,7 @@ export default function Borrow() {
               <Mobile_reverse>
                 {/* 左侧信息栏 */}
                 <DetailInfo>
-                  <Pool__Info>Pool__Info</Pool__Info>
+                  <Pool__Info>Pool Info</Pool__Info>
                   <DetailInfo__content>
                     <Item>
                       <Item__title>Borrow Cap</Item__title>
@@ -351,10 +351,6 @@ export default function Borrow() {
                         borrowTokenData ?
                           format_bn(borrowTokenData[2].toString(), 16, 2) + '%' : '...'
                       }</Item__value>
-                    </Item>
-                    <Item>
-                      <Item__title>After Date APY</Item__title>
-                      <Item__value>{'15.00%'}</Item__value>
                     </Item>
                   </DetailInfo__content>
                 </DetailInfo>

@@ -16,7 +16,7 @@ import { Erc20Interface } from 'abis/types/Erc20'
  * Returns a map of the given addresses to their eventually consistent ETH balances.
  */
 export function useETHBalances(uncheckedAddresses?: (string | undefined)[]): {
-  [address: string]: CurrencyAmount<Currency> | undefined
+  [address: string]: any | undefined
 } {
   const { chainId } = useActiveWeb3React()
   const multicallContract = useMulticall2Contract()
@@ -25,9 +25,9 @@ export function useETHBalances(uncheckedAddresses?: (string | undefined)[]): {
     () =>
       uncheckedAddresses
         ? uncheckedAddresses
-            .map(isAddress)
-            .filter((a): a is string => a !== false)
-            .sort()
+          .map(isAddress)
+          .filter((a): a is string => a !== false)
+          .sort()
         : [],
     [uncheckedAddresses]
   )
@@ -40,10 +40,11 @@ export function useETHBalances(uncheckedAddresses?: (string | undefined)[]): {
 
   return useMemo(
     () =>
-      addresses.reduce<{ [address: string]: CurrencyAmount<Currency> }>((memo, address, i) => {
+      addresses.reduce<{ [address: string]: any }>((memo, address, i) => {
         const value = results?.[i]?.result?.[0]
         if (value && chainId)
-          memo[address] = CurrencyAmount.fromRawAmount(Ether.onChain(chainId), JSBI.BigInt(value.toString()))
+          // memo[address] = CurrencyAmount.fromRawAmount(Ether.onChain(chainId), JSBI.BigInt(value.toString()))
+          memo[address] = value.toString()
         return memo
       }, {}),
     [addresses, chainId, results]
@@ -80,13 +81,13 @@ export function useTokenBalancesWithLoadingIndicator(
       () =>
         address && validatedTokens.length > 0
           ? validatedTokens.reduce<{ [tokenAddress: string]: CurrencyAmount<Token> | undefined }>((memo, token, i) => {
-              const value = balances?.[i]?.result?.[0]
-              const amount = value ? JSBI.BigInt(value.toString()) : undefined
-              if (amount) {
-                memo[token.address] = CurrencyAmount.fromRawAmount(token, amount)
-              }
-              return memo
-            }, {})
+            const value = balances?.[i]?.result?.[0]
+            const amount = value ? JSBI.BigInt(value.toString()) : undefined
+            if (amount) {
+              memo[token.address] = CurrencyAmount.fromRawAmount(token, amount)
+            }
+            return memo
+          }, {})
           : {},
       [address, validatedTokens, balances]
     ),

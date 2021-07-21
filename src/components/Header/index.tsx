@@ -10,6 +10,8 @@ import Modal from '../Modal'
 import Web3Status from '../Web3Status'
 import NetworkCard from './NetworkCard'
 
+import { format_bn, format_num_to_K } from '../../utils'
+
 
 const HeaderFrame = styled.div<{ showBackground: boolean }>`
   /* display: grid; */
@@ -153,6 +155,7 @@ export default function Header() {
   const { account } = useActiveWeb3React()
 
   const userEthBalance = useETHBalances(account ? [account] : [])?.[account ?? '']
+  // console.log(userEthBalance)
   // const [isDark] = useDarkModeManager()
   // const [darkMode, toggleDarkMode] = useDarkModeManager()
 
@@ -172,7 +175,7 @@ export default function Header() {
             {
               account && userEthBalance ?
                 <BalanceText style={{ flexShrink: 0 }} pl="0.75rem" pr="0.5rem" fontWeight={500}>
-                  <Trans>{userEthBalance?.toSignificant(4)} ETH</Trans>
+                  <Trans>{format_num_to_K(format_bn(userEthBalance, 18, 4))} ETH</Trans>
                 </BalanceText>
                 :
                 null
